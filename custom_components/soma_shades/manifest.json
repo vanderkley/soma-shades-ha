@@ -1,6 +1,6 @@
 {
   "domain": "soma_shades",
-  "name": "Soma Smart Shades (Bluetooth)",
+  "name": "Soma Smart Shades",
   "bluetooth": [{ "manufacturer_id": 880, "local_name": "S" }],
   "categories": ["blinds_curtains"],
   "codeowners": ["@vanderkley"],

@@ -1,4 +1,4 @@
-# Soma Smart Shades (Bluetooth) for Home Assistant
+# Soma Smart Shades for Home Assistant
 
 Control [Soma Smart Shades 2](https://www.somasmarthome.com/) directly over Bluetooth LE from Home Assistant, without
 the SOMA Connect hub, an MQTT broker or a separate bridge. It uses the Bluetooth adapters of Home Assistant, and the
@@ -17,7 +17,7 @@ The Smart Shades 3 are not supported.
 1. In HACS, add this repository as a custom repository of the type *Integration*, and download it.
 2. Restart Home Assistant.
 3. The shades are discovered automatically. You can also add one under *Settings > Devices & services > Add
-   integration > Soma Smart Shades (Bluetooth)*.
+   integration > Soma Smart Shades*.
 
 <img src="https://raw.githubusercontent.com/vanderkley/soma-shades-ha/main/docs/discovered-shades.png" width="480" alt="Two discovered shades in Home Assistant, ready to add">
 
