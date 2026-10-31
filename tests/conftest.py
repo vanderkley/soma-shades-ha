@@ -39,6 +39,7 @@ class FakeShade(ShadeClient):
         self.connected = False
         self.last_connect_time = None
         self._disconnected.set()
+        self._notify_update()
 
     async def get_info(self) -> None:
         self.manufacturer = "Wazombi Labs"

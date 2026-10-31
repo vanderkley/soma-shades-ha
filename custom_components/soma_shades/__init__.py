@@ -20,16 +20,16 @@ async def async_setup_entry(hass: HomeAssistant, entry: ShadeConfigEntry) -> boo
     entry.runtime_data = coordinator
 
     async def _stop(_event: Event) -> None:
-        await coordinator.async_stop()
+        await coordinator.connection.stop()
 
     entry.async_on_unload(hass.bus.async_listen_once(EVENT_HOMEASSISTANT_STOP, _stop))
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
-    coordinator.async_start()
+    coordinator.connection.start()
     return True
 
 
 async def async_unload_entry(hass: HomeAssistant, entry: ShadeConfigEntry) -> bool:
     unloaded = await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
     if unloaded:
-        await entry.runtime_data.async_stop()
+        await entry.runtime_data.connection.stop()
     return unloaded

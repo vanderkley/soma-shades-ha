@@ -1,11 +1,9 @@
-from datetime import timedelta
+import asyncio
+from unittest.mock import patch
 
 import pytest
 from homeassistant.exceptions import HomeAssistantError
-from homeassistant.util import dt as dt_util
-from pytest_homeassistant_custom_component.common import async_fire_time_changed
-
-from custom_components.soma_shades.const import OFFLINE_GRACE_PERIOD
+from soma_shades import ConnectionConfig
 
 pytestmark = pytest.mark.usefixtures("fake_bluetooth")
 
@@ -66,14 +64,16 @@ async def test_command_error(hass, entry):
 
 
 async def test_short_connection_drop_keeps_the_shade_available(hass, entry):
-    coordinator = await start(hass, entry)
+    config = ConnectionConfig(offline_grace_period=0.05)
+    with patch("custom_components.soma_shades.coordinator.CONNECTION_CONFIG", config):
+        coordinator = await start(hass, entry)
     coordinator.shade.fail_connect = True
 
     coordinator.shade.lose_connection()
     await hass.async_block_till_done()
     assert hass.states.get(COVER).state != "unavailable"
 
-    async_fire_time_changed(hass, dt_util.utcnow() + timedelta(seconds=OFFLINE_GRACE_PERIOD + 1))
+    await asyncio.sleep(0.1)
     await hass.async_block_till_done()
     assert hass.states.get(COVER).state == "unavailable"
     await hass.config_entries.async_unload(entry.entry_id)

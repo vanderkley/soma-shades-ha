@@ -1,2 +1,2 @@
 pytest-homeassistant-custom-component
-soma-shades==1.4.0
+soma-shades==2.0.0
