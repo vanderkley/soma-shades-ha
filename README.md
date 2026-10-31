@@ -19,6 +19,8 @@ The Smart Shades 3 are not supported.
 3. The shades are discovered automatically. You can also add one under *Settings > Devices & services > Add
    integration > Soma Smart Shades (Bluetooth)*.
 
+<img src="https://raw.githubusercontent.com/vanderkley/soma-shades-ha/main/docs/discovered-shades.png" width="480" alt="Two discovered shades in Home Assistant, ready to add">
+
 ## Bluetooth
 The integration keeps a connection open to every shade, for a fast response. Every shade takes a connection slot of
 the adapter, shared with the other Bluetooth devices of Home Assistant, so use an adapter from the
