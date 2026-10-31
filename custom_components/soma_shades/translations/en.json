@@ -1,0 +1,26 @@
+{
+  "config": {
+    "flow_title": "{name}",
+    "step": {
+      "user": {
+        "description": "Stop the MQTT bridge and close the Soma app first: a shade with a connection is not visible.",
+        "data": { "address": "Shade" }
+      },
+      "bluetooth_confirm": { "description": "Add {name}?" }
+    },
+    "abort": {
+      "already_configured": "This shade is already configured.",
+      "no_devices_found": "No shades found. A shade is only visible without a connection, and within range of a connectable Bluetooth adapter or proxy."
+    }
+  },
+  "entity": {
+    "button": { "sync_time": { "name": "Sync time" } },
+    "sensor": {
+      "battery_voltage": { "name": "Battery voltage" },
+      "input_voltage": { "name": "Input voltage" },
+      "charging_current": { "name": "Charging current" },
+      "connected_since": { "name": "Connected since" }
+    },
+    "switch": { "bluetooth_connection": { "name": "Bluetooth connection" } }
+  }
+}

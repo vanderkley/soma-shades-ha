@@ -1,0 +1,14 @@
+{
+  "domain": "soma_shades",
+  "name": "Soma Smart Shades (Bluetooth)",
+  "bluetooth": [{ "manufacturer_id": 880, "local_name": "S" }],
+  "codeowners": ["@vanderkley"],
+  "config_flow": true,
+  "dependencies": ["bluetooth_adapters"],
+  "documentation": "https://github.com/vanderkley/soma-shades-ha",
+  "integration_type": "device",
+  "iot_class": "local_push",
+  "issue_tracker": "https://github.com/vanderkley/soma-shades-ha/issues",
+  "requirements": ["soma-shades==1.4.0"],
+  "version": "0.1.0"
+}
