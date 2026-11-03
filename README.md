@@ -18,9 +18,9 @@ Every shade is a device with:
 - a *Bluetooth connection* switch
 
 ## Installation
-1. In HACS, search for *Soma Smart Shades* and download it.
-2. Restart Home Assistant.
-3. Add the discovered shades, or add one under *Settings > Devices & services > Add integration > Soma Smart Shades*.
+1. Under *Settings > Marketplace*, search for *Soma Smart Shades* and install it. On Home Assistant 2026.10 or older,
+   use HACS and restart Home Assistant afterwards.
+2. Add the discovered shades, or add one under *Settings > Devices & services > Add integration > Soma Smart Shades*.
 
 <img src="https://raw.githubusercontent.com/vanderkley/soma-shades-ha/main/docs/discovered-shades.png" width="480" alt="Two discovered shades in Home Assistant, ready to add">
 
