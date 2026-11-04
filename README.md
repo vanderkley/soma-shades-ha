@@ -1,7 +1,7 @@
 # Soma Smart Shades for Home Assistant
 
-Control [Soma Smart Shades 2](https://www.somasmarthome.com/) over Bluetooth LE from Home Assistant, without the SOMA
-Connect hub, an MQTT broker or a separate bridge. The Smart Shades 3 are not supported.
+Control [Soma Smart Shades 2 and Tilt 2](https://www.somasmarthome.com/) over Bluetooth LE from Home Assistant, without
+the SOMA Connect hub, an MQTT broker or a separate bridge. The Smart Shades 3 are not supported.
 
 ```
 ┌──────────────┐               ┌──────────────────────┐
@@ -12,7 +12,8 @@ Connect hub, an MQTT broker or a separate bridge. The Smart Shades 3 are not sup
 ```
 
 Every shade is a device with:
-- a cover with live position updates
+- a cover with live position updates, for a Tilt with the tilt position: closed downwards at 0, open at 50 and closed
+  upwards at 100, as in the SOMA Connect integration
 - battery, charging and connection sensors
 - *Identify* and *Sync time* buttons
 - a *Bluetooth connection* switch

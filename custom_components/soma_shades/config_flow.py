@@ -7,9 +7,9 @@ from homeassistant.components.bluetooth import BluetoothServiceInfoBleak, async_
 from homeassistant.config_entries import ConfigFlow, ConfigFlowResult
 from homeassistant.const import CONF_ADDRESS, CONF_NAME
 from soma_shades import ShadeClient
-from soma_shades.ble.protocol import ADVERTISEMENT_NAME, parse_device_name
+from soma_shades.ble.protocol import ADVERTISEMENT_NAME, is_tilt, parse_device_name
 
-from .const import DOMAIN
+from .const import CONF_TILT, DOMAIN
 
 
 def _display_name(info: BluetoothServiceInfoBleak) -> str:
@@ -64,5 +64,6 @@ class SomaShadesConfigFlow(ConfigFlow, domain=DOMAIN):
 
     def _create_entry(self, info: BluetoothServiceInfoBleak) -> ConfigFlowResult:
         return self.async_create_entry(
-            title=_display_name(info), data={CONF_ADDRESS: info.address, CONF_NAME: _shade_name(info)}
+            title=_display_name(info),
+            data={CONF_ADDRESS: info.address, CONF_NAME: _shade_name(info), CONF_TILT: is_tilt(info.manufacturer_data)},
         )

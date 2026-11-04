@@ -6,7 +6,7 @@ from homeassistant.const import CONF_ADDRESS, CONF_NAME
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 from soma_shades import ShadeClient
 
-from custom_components.soma_shades.const import DOMAIN
+from custom_components.soma_shades.const import CONF_TILT, DOMAIN
 
 MAC = "C7:D4:E5:FE:C4:67"
 
@@ -96,7 +96,20 @@ def bluetooth_setup(enable_bluetooth) -> None:
 @pytest.fixture
 def entry() -> MockConfigEntry:
     return MockConfigEntry(
-        domain=DOMAIN, unique_id=MAC, title="Living Room", data={CONF_ADDRESS: MAC, CONF_NAME: "living_room"}
+        domain=DOMAIN,
+        unique_id=MAC,
+        title="Living Room",
+        data={CONF_ADDRESS: MAC, CONF_NAME: "living_room", CONF_TILT: False},
+    )
+
+
+@pytest.fixture
+def tilt_entry() -> MockConfigEntry:
+    return MockConfigEntry(
+        domain=DOMAIN,
+        unique_id=MAC,
+        title="Living Room",
+        data={CONF_ADDRESS: MAC, CONF_NAME: "living_room", CONF_TILT: True},
     )
 
 

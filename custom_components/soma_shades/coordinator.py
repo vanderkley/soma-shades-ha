@@ -13,7 +13,7 @@ from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers.device_registry import CONNECTION_BLUETOOTH
 from soma_shades import ConnectionConfig, ShadeClient, ShadeConnection
 
-from .const import CONF_BLUETOOTH_ENABLED
+from .const import CONF_BLUETOOTH_ENABLED, CONF_TILT
 
 CONNECTION_CONFIG = ConnectionConfig()
 
@@ -24,6 +24,7 @@ class ShadeCoordinator:
     def __init__(self, hass: HomeAssistant, entry: ConfigEntry, connect_semaphore: asyncio.Semaphore) -> None:
         self.hass = hass
         self.entry = entry
+        self.tilt: bool = entry.data[CONF_TILT]
         self.shade = ShadeClient(
             mac=entry.data[CONF_ADDRESS],
             name=entry.data[CONF_NAME],

@@ -17,7 +17,7 @@ class ShadeEntity(Entity):
         self._attr_device_info = DeviceInfo(
             connections={(CONNECTION_BLUETOOTH, self.shade.mac)},
             name=self.shade.display_name,
-            model="Smart Shades 2",
+            model="Tilt 2" if coordinator.tilt else "Smart Shades 2",
         )
 
     @property
