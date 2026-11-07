@@ -12,16 +12,16 @@ the SOMA Connect hub, an MQTT broker or a separate bridge. The Smart Shades 3 ar
 ```
 
 Every shade is a device with:
-- a cover with live position updates, for a Tilt with the tilt position: closed downwards at 0, open at 50 and closed
-  upwards at 100, as in the SOMA Connect integration. Does e.g. your remote not support tilt? Turn off *Show as tilt*
-  under *Configure*, for a cover with a position with the same values
+- a cover with live position updates
+  - a Tilt has a tilt position: closed downwards at 0, open at 50 and closed upwards at 100, as in the SOMA Connect
+    integration. For e.g. a remote without tilt support, turn off *Show as tilt* under *Configure*
 - battery, charging and connection sensors
 - *Identify* and *Sync time* buttons
 - a *Bluetooth connection* switch
 
 ## Installation
-1. Under *Settings > Marketplace*, search for *Soma Smart Shades* and install it. On Home Assistant 2026.10 or older,
-   use HACS and restart Home Assistant afterwards.
+1. Under *Settings > Marketplace*, search for *Soma Smart Shades*, install it and restart Home Assistant. On Home
+   Assistant 2026.10 or older, use HACS.
 2. Add the discovered shades, or add one under *Settings > Devices & services > Add integration > Soma Smart Shades*.
 
 <img src="https://raw.githubusercontent.com/vanderkley/soma-shades-ha/main/docs/discovered-shades.png" width="480" alt="Two discovered shades in Home Assistant, ready to add">
