@@ -31,8 +31,12 @@ A connection to every shade stays open, for a fast response. Each one takes a co
 with your other Bluetooth devices, so
 [choose a good adapter](https://github.com/vanderkley/soma-shades#bluetooth-adapter).
 
-Shades out of range of Home Assistant can connect through Bluetooth proxies, each shade takes a connection slot. Or run
-the [MQTT bridge](https://github.com/vanderkley/soma-shades#mqtt-bridge) on a device closer to them, e.g. a Raspberry Pi.
+Is Home Assistant out of range of the shades? Add a
+[Bluetooth proxy](https://www.home-assistant.io/integrations/bluetooth/#remote-adapters-bluetooth-proxies) close to
+them, Home Assistant then connects to the shades through it. A proxy holds only a few connections at the same time,
+usually 3, and every shade keeps one open. Or run the
+[MQTT bridge](https://github.com/vanderkley/soma-shades#mqtt-bridge) on a device in a central spot between the shades,
+e.g. a Raspberry Pi with a good adapter that holds the connections to all of them.
 
 ## Soma app
 A shade accepts a single connection. To configure it in the Soma app, turn off its *Bluetooth connection* switch. It
