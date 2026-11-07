@@ -13,7 +13,7 @@ from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers.device_registry import CONNECTION_BLUETOOTH
 from soma_shades import ConnectionConfig, ShadeClient, ShadeConnection
 
-from .const import CONF_BLUETOOTH_ENABLED, CONF_TILT
+from .const import CONF_BLUETOOTH_ENABLED, CONF_SHOW_AS_TILT, CONF_TILT
 
 CONNECTION_CONFIG = ConnectionConfig()
 
@@ -25,6 +25,7 @@ class ShadeCoordinator:
         self.hass = hass
         self.entry = entry
         self.tilt: bool = entry.data[CONF_TILT]
+        self.show_as_tilt = self.tilt and entry.options.get(CONF_SHOW_AS_TILT, True)
         self.shade = ShadeClient(
             mac=entry.data[CONF_ADDRESS],
             name=entry.data[CONF_NAME],

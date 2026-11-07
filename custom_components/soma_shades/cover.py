@@ -20,7 +20,7 @@ async def async_setup_entry(
     hass: HomeAssistant, entry: ShadeConfigEntry, async_add_entities: AddConfigEntryEntitiesCallback
 ) -> None:
     coordinator = entry.runtime_data
-    cover = TiltCover if coordinator.tilt else ShadeCover
+    cover = TiltCover if coordinator.show_as_tilt else ShadeCover
     async_add_entities([cover(coordinator, "cover")])
 
 

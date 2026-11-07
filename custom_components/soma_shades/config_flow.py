@@ -4,12 +4,13 @@ from typing import Any
 
 import voluptuous as vol
 from homeassistant.components.bluetooth import BluetoothServiceInfoBleak, async_discovered_service_info
-from homeassistant.config_entries import ConfigFlow, ConfigFlowResult
+from homeassistant.config_entries import ConfigEntry, ConfigFlow, ConfigFlowResult, OptionsFlowWithReload
 from homeassistant.const import CONF_ADDRESS, CONF_NAME
+from homeassistant.core import callback
 from soma_shades import ShadeClient
 from soma_shades.ble.protocol import ADVERTISEMENT_NAME, is_tilt, parse_device_name
 
-from .const import CONF_TILT, DOMAIN
+from .const import CONF_SHOW_AS_TILT, CONF_TILT, DOMAIN
 
 
 def _display_name(info: BluetoothServiceInfoBleak) -> str:
@@ -23,6 +24,17 @@ def _shade_name(info: BluetoothServiceInfoBleak) -> str:
 
 class SomaShadesConfigFlow(ConfigFlow, domain=DOMAIN):
     VERSION = 1
+
+    @staticmethod
+    @callback
+    def async_get_options_flow(config_entry: ConfigEntry) -> SomaShadesOptionsFlow:
+        return SomaShadesOptionsFlow()
+
+    @classmethod
+    @callback
+    def async_supports_options_flow(cls, config_entry: ConfigEntry) -> bool:
+        """Only a Tilt has options."""
+        return bool(config_entry.data.get(CONF_TILT))
 
     def __init__(self) -> None:
         self._discovery: BluetoothServiceInfoBleak | None = None
@@ -67,3 +79,14 @@ class SomaShadesConfigFlow(ConfigFlow, domain=DOMAIN):
             title=_display_name(info),
             data={CONF_ADDRESS: info.address, CONF_NAME: _shade_name(info), CONF_TILT: is_tilt(info.manufacturer_data)},
         )
+
+
+class SomaShadesOptionsFlow(OptionsFlowWithReload):
+    """Show a Tilt as a cover with a position, for e.g. a remote that does not support tilt."""
+
+    async def async_step_init(self, user_input: dict[str, Any] | None = None) -> ConfigFlowResult:
+        options = self.config_entry.options
+        if user_input is not None:
+            return self.async_create_entry(data={**options, **user_input})
+        schema = vol.Schema({vol.Required(CONF_SHOW_AS_TILT, default=options.get(CONF_SHOW_AS_TILT, True)): bool})
+        return self.async_show_form(step_id="init", data_schema=schema)

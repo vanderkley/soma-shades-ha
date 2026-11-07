@@ -3,10 +3,11 @@ from unittest.mock import patch
 import pytest
 from homeassistant.config_entries import ConfigEntryState
 from homeassistant.const import CONF_ADDRESS, CONF_NAME
+from homeassistant.data_entry_flow import FlowResultType
 from homeassistant.helpers import device_registry as dr
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 
-from custom_components.soma_shades.const import CONF_TILT, DOMAIN
+from custom_components.soma_shades.const import CONF_BLUETOOTH_ENABLED, CONF_SHOW_AS_TILT, CONF_TILT, DOMAIN
 
 from .conftest import MAC
 from .test_config_flow import INFO, TILT_INFO
@@ -69,3 +70,29 @@ async def test_entry_without_the_tilt_flag_waits_for_an_advertisement(hass):
 
     assert entry.state is ConfigEntryState.SETUP_RETRY
     assert CONF_TILT not in entry.data
+
+
+async def test_show_as_tilt_option(hass, tilt_entry):
+    await start(hass, tilt_entry)
+    await service(hass, "switch", "turn_off", "switch.living_room_bluetooth_connection")
+
+    result = await hass.config_entries.options.async_init(tilt_entry.entry_id)
+    assert result["type"] is FlowResultType.FORM
+    result = await hass.config_entries.options.async_configure(result["flow_id"], {CONF_SHOW_AS_TILT: False})
+    assert result["type"] is FlowResultType.CREATE_ENTRY
+    await hass.async_block_till_done()
+
+    # a cover with a position, with the same values, and the Bluetooth connection stays off
+    assert tilt_entry.options == {CONF_BLUETOOTH_ENABLED: False, CONF_SHOW_AS_TILT: False}
+    await service(hass, "switch", "turn_on", "switch.living_room_bluetooth_connection")
+    cover = hass.states.get(COVER)
+    assert cover.attributes["current_position"] == 70
+    assert "current_tilt_position" not in cover.attributes
+    await service(hass, "cover", "set_cover_position", COVER, position=25)
+    assert tilt_entry.runtime_data.shade.commands[-1] == "position 75"
+    await hass.config_entries.async_unload(tilt_entry.entry_id)
+
+
+async def test_only_a_tilt_has_options(hass, entry, tilt_entry):
+    assert not entry.supports_options
+    assert tilt_entry.supports_options

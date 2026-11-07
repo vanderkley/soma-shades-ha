@@ -22,5 +22,15 @@
       "connected_since": { "name": "Connected since" }
     },
     "switch": { "bluetooth_connection": { "name": "Bluetooth connection" } }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "data": { "show_as_tilt": "Show as tilt" },
+        "data_description": {
+          "show_as_tilt": "Turned off, the Tilt is a cover with a position instead of a tilt position, for e.g. a remote that does not support tilt. The values stay the same: closed downwards at 0, open at 50 and closed upwards at 100."
+        }
+      }
+    }
   }
 }

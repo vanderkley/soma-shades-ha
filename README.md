@@ -13,7 +13,8 @@ the SOMA Connect hub, an MQTT broker or a separate bridge. The Smart Shades 3 ar
 
 Every shade is a device with:
 - a cover with live position updates, for a Tilt with the tilt position: closed downwards at 0, open at 50 and closed
-  upwards at 100, as in the SOMA Connect integration
+  upwards at 100, as in the SOMA Connect integration. Does e.g. your remote not support tilt? Turn off *Show as tilt*
+  under *Configure*, for a cover with a position with the same values
 - battery, charging and connection sensors
 - *Identify* and *Sync time* buttons
 - a *Bluetooth connection* switch
@@ -30,8 +31,8 @@ A connection to every shade stays open, for a fast response. Each one takes a co
 with your other Bluetooth devices, so
 [choose a good adapter](https://github.com/vanderkley/soma-shades#bluetooth-adapter).
 
-Is Home Assistant out of range of the shades? Run the
-[MQTT bridge](https://github.com/vanderkley/soma-shades#mqtt-bridge) on a device closer to them, e.g. a Raspberry Pi.
+Shades out of range of Home Assistant can connect through Bluetooth proxies, each shade takes a connection slot. Or run
+the [MQTT bridge](https://github.com/vanderkley/soma-shades#mqtt-bridge) on a device closer to them, e.g. a Raspberry Pi.
 
 ## Soma app
 A shade accepts a single connection. To configure it in the Soma app, turn off its *Bluetooth connection* switch. It
