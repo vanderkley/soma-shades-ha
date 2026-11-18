@@ -72,15 +72,32 @@ class FakeShade(ShadeClient):
 
     async def stop(self) -> None:
         self.commands.append("stop")
+        self._target_position = self._position
+        self._notify_update()
 
     async def set_position(self, target) -> None:
         self.commands.append(f"position {target}")
+        self._target_position = int(target)
+        self._notify_update()
+
+    def arrive(self) -> None:
+        """The shade reaches its target position."""
+        self._position = self._target_position
+        self._notify_update()
 
     async def sync_time(self) -> None:
         self.commands.append("sync time")
 
     async def identify(self, sound: int = 1) -> None:
         self.commands.append("identify")
+
+    async def get_motor_speed(self) -> int | None:
+        self.motor_speed = 60
+        return 60
+
+    async def set_motor_speed(self, speed) -> None:
+        self.motor_speed = int(speed)
+        self.commands.append(f"motor speed {speed}")
 
 
 @pytest.fixture(autouse=True)

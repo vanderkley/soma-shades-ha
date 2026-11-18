@@ -2,6 +2,7 @@
 
 from typing import Any
 
+import voluptuous as vol
 from homeassistant.components.cover import (
     ATTR_POSITION,
     ATTR_TILT_POSITION,
@@ -10,10 +11,18 @@ from homeassistant.components.cover import (
     CoverEntityFeature,
 )
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers import config_validation as cv
+from homeassistant.helpers import entity_platform
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 
 from . import ShadeConfigEntry
+from .const import ATTR_SPEED, DEFAULT_SLOW_SPEED, SERVICE_MOVE_SLOWLY
 from .entity import ShadeEntity
+
+MOVE_SLOWLY_SCHEMA = {
+    vol.Required(ATTR_POSITION): vol.All(vol.Coerce(int), vol.Range(min=0, max=100)),
+    vol.Optional(ATTR_SPEED, default=DEFAULT_SLOW_SPEED): vol.All(vol.Coerce(int), vol.Range(min=1, max=100)),
+}
 
 
 async def async_setup_entry(
@@ -22,6 +31,9 @@ async def async_setup_entry(
     coordinator = entry.runtime_data
     cover = TiltCover if coordinator.show_as_tilt else ShadeCover
     async_add_entities([cover(coordinator, "cover")])
+    entity_platform.async_get_current_platform().async_register_entity_service(
+        SERVICE_MOVE_SLOWLY, cv.make_entity_service_schema(MOVE_SLOWLY_SCHEMA), "async_move_slowly"
+    )
 
 
 class ShadeCover(ShadeEntity, CoverEntity):
@@ -52,17 +64,20 @@ class ShadeCover(ShadeEntity, CoverEntity):
         return self.shade.cover_status == "closing"
 
     async def async_open_cover(self, **kwargs: Any) -> None:
-        await self.coordinator.async_command(self.shade.move_up)
+        await self.coordinator.async_cover_command(self.shade.move_up)
 
     async def async_close_cover(self, **kwargs: Any) -> None:
-        await self.coordinator.async_command(self.shade.move_down)
+        await self.coordinator.async_cover_command(self.shade.move_down)
 
     async def async_stop_cover(self, **kwargs: Any) -> None:
-        await self.coordinator.async_command(self.shade.stop)
+        await self.coordinator.async_cover_command(self.shade.stop, stop=True)
 
     async def async_set_cover_position(self, **kwargs: Any) -> None:
         target = 100 - kwargs[ATTR_POSITION]
-        await self.coordinator.async_command(lambda: self.shade.set_position(target))
+        await self.coordinator.async_cover_command(lambda: self.shade.set_position(target))
+
+    async def async_move_slowly(self, position: int, speed: int) -> None:
+        await self.coordinator.async_move_slowly(100 - position, speed)
 
 
 class TiltCover(ShadeEntity, CoverEntity):
@@ -94,14 +109,18 @@ class TiltCover(ShadeEntity, CoverEntity):
         return None if tilt is None else not self.CLOSED_DOWN_THRESHOLD <= tilt <= self.CLOSED_UP_THRESHOLD
 
     async def async_open_cover_tilt(self, **kwargs: Any) -> None:
-        await self.coordinator.async_command(lambda: self.shade.set_position(50))
+        await self.coordinator.async_cover_command(lambda: self.shade.set_position(50))
 
     async def async_close_cover_tilt(self, **kwargs: Any) -> None:
-        await self.coordinator.async_command(lambda: self.shade.set_position(100))
+        await self.coordinator.async_cover_command(lambda: self.shade.set_position(100))
 
     async def async_stop_cover_tilt(self, **kwargs: Any) -> None:
-        await self.coordinator.async_command(self.shade.stop)
+        await self.coordinator.async_cover_command(self.shade.stop, stop=True)
 
     async def async_set_cover_tilt_position(self, **kwargs: Any) -> None:
         target = 100 - kwargs[ATTR_TILT_POSITION]
-        await self.coordinator.async_command(lambda: self.shade.set_position(target))
+        await self.coordinator.async_cover_command(lambda: self.shade.set_position(target))
+
+    async def async_move_slowly(self, position: int, speed: int) -> None:
+        """The position is the tilt position."""
+        await self.coordinator.async_move_slowly(100 - position, speed)

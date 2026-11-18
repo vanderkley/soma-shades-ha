@@ -1,0 +1,20 @@
+move_slowly:
+  target:
+    entity:
+      integration: soma_shades
+      domain: cover
+  fields:
+    position:
+      required: true
+      selector:
+        number:
+          min: 0
+          max: 100
+          unit_of_measurement: "%"
+    speed:
+      default: 10
+      selector:
+        number:
+          min: 1
+          max: 100
+          unit_of_measurement: "%"

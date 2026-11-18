@@ -9,6 +9,7 @@ pytestmark = pytest.mark.usefixtures("fake_bluetooth")
 
 COVER = "cover.living_room"
 SWITCH = "switch.living_room_bluetooth_connection"
+MOTOR_SPEED = "number.living_room_motor_speed"
 
 
 async def start(hass, entry):
@@ -49,6 +50,77 @@ async def test_commands(hass, entry):
 
     commands = [command for command in coordinator.shade.commands if not command.startswith("notify")]
     assert commands == ["up", "down", "stop", "position 25", "sync time", "identify"]
+    await hass.config_entries.async_unload(entry.entry_id)
+
+
+async def test_motor_speed(hass, entry):
+    coordinator = await start(hass, entry)
+    assert hass.states.get(MOTOR_SPEED).state == "60"  # read after connecting
+
+    await service(hass, "number", "set_value", MOTOR_SPEED, value=35)
+    assert hass.states.get(MOTOR_SPEED).state == "35"
+    assert "motor speed 35" in coordinator.shade.commands
+    await hass.config_entries.async_unload(entry.entry_id)
+
+
+async def test_move_slowly(hass, entry):
+    coordinator = await start(hass, entry)
+    shade = coordinator.shade
+
+    await service(hass, "soma_shades", "move_slowly", COVER, position=0)  # close at the default slow speed
+    assert shade.commands[-2:] == ["motor speed 10", "position 100"]
+    assert hass.states.get(COVER).state == "closing"
+
+    shade.arrive()
+    await hass.async_block_till_done()
+    assert shade.commands[-1] == "motor speed 60"  # set back to the speed of the shade
+    assert hass.states.get(MOTOR_SPEED).state == "60"
+    await hass.config_entries.async_unload(entry.entry_id)
+
+
+async def test_move_slowly_stopped(hass, entry):
+    coordinator = await start(hass, entry)
+    shade = coordinator.shade
+
+    await service(hass, "soma_shades", "move_slowly", COVER, position=100, speed=25)
+    assert shade.commands[-2:] == ["motor speed 25", "position 0"]
+    await service(hass, "cover", "stop_cover", COVER)
+    assert shade.commands[-1] == "motor speed 60"
+    await hass.config_entries.async_unload(entry.entry_id)
+
+
+async def test_move_during_a_slow_move_is_at_the_normal_speed(hass, entry):
+    coordinator = await start(hass, entry)
+    shade = coordinator.shade
+
+    await service(hass, "soma_shades", "move_slowly", COVER, position=0)
+    await service(hass, "cover", "open_cover", COVER)
+    assert shade.commands[-2:] == ["motor speed 60", "up"]
+    await hass.config_entries.async_unload(entry.entry_id)
+
+
+async def test_no_config_write_while_the_shade_moves(hass, entry):
+    """A read of the target position can make the shade look stopped, only a new position ends a slow move."""
+    coordinator = await start(hass, entry)
+    shade = coordinator.shade
+
+    await service(hass, "soma_shades", "move_slowly", COVER, position=0)
+    shade._target_position = shade.position  # e.g. read by the keepalive while the shade moves
+    shade._notify_update()
+    await hass.async_block_till_done()
+    assert shade.commands[-1] == "position 100"
+    await hass.config_entries.async_unload(entry.entry_id)
+
+
+async def test_motor_speed_set_during_a_slow_move_stays(hass, entry):
+    coordinator = await start(hass, entry)
+    shade = coordinator.shade
+
+    await service(hass, "soma_shades", "move_slowly", COVER, position=0)
+    await service(hass, "number", "set_value", MOTOR_SPEED, value=80)
+    shade.arrive()
+    await hass.async_block_till_done()
+    assert shade.commands[-1] == "motor speed 80"
     await hass.config_entries.async_unload(entry.entry_id)
 
 

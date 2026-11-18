@@ -12,7 +12,7 @@ from soma_shades import is_tilt
 from .const import CONF_TILT, DOMAIN
 from .coordinator import ShadeCoordinator
 
-PLATFORMS = [Platform.BUTTON, Platform.COVER, Platform.SENSOR, Platform.SWITCH]
+PLATFORMS = [Platform.BUTTON, Platform.COVER, Platform.NUMBER, Platform.SENSOR, Platform.SWITCH]
 
 type ShadeConfigEntry = ConfigEntry[ShadeCoordinator]
 

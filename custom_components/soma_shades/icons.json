@@ -1,0 +1,8 @@
+{
+  "entity": {
+    "number": { "motor_speed": { "default": "mdi:speedometer" } }
+  },
+  "services": {
+    "move_slowly": { "service": "mdi:speedometer-slow" }
+  }
+}

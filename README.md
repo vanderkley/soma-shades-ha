@@ -17,7 +17,11 @@ Every shade is a device with:
     integration. For e.g. a remote without tilt support, turn off *Show as tilt* under *Configure*
 - battery, charging and connection sensors
 - *Identify* and *Sync time* buttons
+- a *Motor speed* setting from 0 to 100%, which the shade keeps, e.g. lower for a quieter shade in the bedroom
 - a *Bluetooth connection* switch
+
+The *Move slowly* action (`soma_shades.move_slowly`) moves a shade to a position at a lower motor speed, like the morning
+mode of the Soma app, e.g. to open quietly in the morning. The motor speed is set back when the shade stops.
 
 ## Installation
 1. Under *Settings > Marketplace*, search for *Soma Smart Shades*, install it and restart Home Assistant. On Home

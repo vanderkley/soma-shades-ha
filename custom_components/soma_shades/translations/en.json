@@ -15,6 +15,7 @@
   },
   "entity": {
     "button": { "sync_time": { "name": "Sync time" } },
+    "number": { "motor_speed": { "name": "Motor speed" } },
     "sensor": {
       "battery_voltage": { "name": "Battery voltage" },
       "input_voltage": { "name": "Input voltage" },
@@ -30,6 +31,19 @@
         "data_description": {
           "show_as_tilt": "Turned off, the Tilt is a cover with a position instead of a tilt position, for e.g. a remote that does not support tilt. The values stay the same: closed downwards at 0, open at 50 and closed upwards at 100."
         }
+      }
+    }
+  },
+  "services": {
+    "move_slowly": {
+      "name": "Move slowly",
+      "description": "Move to a position at a lower motor speed, e.g. to open quietly in the morning. The motor speed is set back when the shade stops.",
+      "fields": {
+        "position": {
+          "name": "Position",
+          "description": "The position to move to: closed at 0 and open at 100. For a Tilt the tilt position: closed downwards at 0, open at 50 and closed upwards at 100."
+        },
+        "speed": { "name": "Speed", "description": "The motor speed during the move." }
       }
     }
   }
